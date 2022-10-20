@@ -1,6 +1,6 @@
 all: gbp2zhb 3sided nsided zheng-ball
 
-CXXFLAGS=-std=c++17 -pedantic -Wall -O3 -DNDEBUG
+CXXFLAGS=-std=c++17 -pedantic -Wall -O3 -DNDEBUG -g
 
 GEOM=../libgeom
 DFO=../dfo

@@ -89,7 +89,7 @@ Point3D ZhengBall::eval(const Parameter &u) const {
         if (j != im && j != i && j != ip)
           B *= std::pow(u[j], m);
       double prod = 1;
-      for (size_t j = 0; j < n; ++j) // <- TODO: different for 3-sided
+      for (size_t j = 0; j < n; ++j) // <- TODO: different for 3-sided (see 3.2b)
         prod *= u[j];
       B *= (1 - m * coefficient(n) * prod);
     }
@@ -99,11 +99,9 @@ Point3D ZhengBall::eval(const Parameter &u) const {
   // Correction (2.6)
   double S = Bsum - 1;
   size_t T = numControlPoints(n, m, true);
-  for (const auto &[l, p] : cnet) {
-    auto it = std::find(l.begin(), l.end(), 0);
-    if (it == l.end())
+  for (const auto &[l, p] : cnet)
+    if (std::find(l.begin(), l.end(), 0) == l.end())
       result -= p * (S / T);
-  }
   return result;
 }
 
@@ -128,7 +126,7 @@ static TriMesh loadParameters(std::string filename, std::vector<Parameter> &para
       {
         double x;
         Parameter p;
-        while (!line.empty()) {
+        while (ss.rdbuf()->in_avail() > 0) {
           ss >> x;
           p.push_back(x);
         }
