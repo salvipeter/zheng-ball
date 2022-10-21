@@ -17,7 +17,7 @@ class ZhengBall {
 public:
   static ZhengBall load(std::string filename);
   Point3D eval(const Parameter &u) const;
-  void tessellate(std::string filename, std::string param_filename = "") const;
+  TriMesh tessellate(std::string param_filename = "") const;
 
 private:
   size_t n, m;
@@ -151,21 +151,24 @@ static TriMesh loadParameters(std::string filename, std::vector<Parameter> &para
   return result;
 }
 
-void ZhengBall::tessellate(std::string filename, std::string param_filename) const {
+TriMesh ZhengBall::tessellate(std::string param_filename) const {
   if (param_filename.empty())
     param_filename = std::to_string(n) + "sided.obj";
   std::vector<Parameter> params;
   auto mesh = loadParameters(param_filename, params);
   for (size_t i = 0; i < params.size(); ++i)
     mesh[i] = eval(params[i]);
-  mesh.writeOBJ(filename);
+  return mesh;
 }
 
 int main(int argc, char **argv) {
-  if (argc != 3) {
-    std::cerr << "Usage: " << argv[0] << " <input.zhb> <output.obj>" << std::endl;
+  if (argc != 3 && argc != 4) {
+    std::cerr << "Usage: " << argv[0] << " <input.zhb> <output.obj> [parameters.obj]" << std::endl;
     return 1;
   }
+  std::string param_filename = "";
+  if (argc == 4)
+    param_filename = argv[3];
 
-  ZhengBall::load(argv[1]).tessellate(argv[2]);
+  ZhengBall::load(argv[1]).tessellate(param_filename).writeOBJ(argv[2]);
 }
