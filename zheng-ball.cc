@@ -88,10 +88,17 @@ Point3D ZhengBall::eval(const Parameter &u) const {
       for (size_t j = 0; j < n; ++j)
         if (j != im && j != i && j != ip)
           B *= std::pow(u[j], m);
-      double prod = 1;
-      for (size_t j = 0; j < n; ++j) // <- TODO: different for 3-sided (see 3.2b)
-        prod *= u[j];
-      B *= (1 - m * coefficient(n) * prod);
+      if (n == 3) {
+        // Special case - (3.2b)
+        // Note: the equation there treats side (i-1), and k and m-k are swapped
+        double f = m - k <= k ? m - k + (2 * k - m) * u[ip] : k + (m - 2 * k) * u[im];
+        B *= 1 - u[i] * f;
+      } else {
+        double prod = 1;
+        for (size_t j = 0; j < n; ++j)
+          prod *= u[j];
+        B *= (1 - m * coefficient(n) * prod);
+      }
     }
     result += p * B;
     Bsum += B;
