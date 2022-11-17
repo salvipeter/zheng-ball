@@ -39,6 +39,9 @@ TriMesh triangles(size_t resolution) {
 }
 
 Point3D project(const Point3D &p) {
+  // Trivial version - seems to be just as good
+  // return { p[0], p[1], (1 - p[0] - p[1]) / (1 - 2 * p[0] * p[1]) };
+
   auto f = [&](const Powell::Point &x) {
     if (x[0] < 0 || x[1] < 0 || x[2] < 0)
       std::numeric_limits<double>::max();
