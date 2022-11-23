@@ -2,7 +2,6 @@ gbp2zhb
 3sided
 nsided
 zheng-ball
-*.gbp
 *.zhb
 *.obj
 *.stl
